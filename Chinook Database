@@ -1,0 +1,262 @@
+# For this project, I used SQL to analyze the data from database Chinook that represents a digital media store and includes tables for artists,
+albums, media tracks, invoices, and customers.
+
+# The Chinook Database is made up of 11 tables: 
+
+    1. Employees: stores employees data such as employee id, last name, first name, etc. It also has a field named ReportsTo to specify
+       who reports to whom.
+    2. Customers: stores customers data. The line between employees.Employeeid and customers.SupportRepID shows how the two tables are 
+       related (ie, how you would JOIN them).
+    3. Invoices: stores invoice header data (Customer ID, Billing Address, etc).
+    4. Invoice_items: stores the invoice line items data (Unit Price, Quantity).
+    5. Artists: stores artists data.
+    6. Albums: stores data about a list of tracks. Each album belongs to one artist. However, one artist may have multiple albums.
+    7. Media_types: table stores media types such as MPEG audio and AAC audio files.
+    8. Genres: stores music types such as rock, jazz, metal, etc.
+    9. Tracks: stores the data of songs. Each track belongs to one album.
+    10. Playlists: store data about playlists. Each playlist contains a list of tracks. Each track may belong to multiple playlists.
+    11. Playlist_track: The relationship between the playlists table and tracks table is many-to-many. This table is used to reflect this relationship.
+
+# The following queries are how I analyzed the data:
+
+#1. What customers are not in the USA? Show customer's full names, customer ID, and country.
+
+SELECT
+    FirstName,
+    LastName,
+    CustomerID,
+    Country
+FROM chinook.customers
+WHERE Country <> 'USA'; 
+
+#2. Which customers are from Brazil? 
+
+SELECT
+    firstname,
+    lastname,
+    customerid
+FROM chinook.customers
+WHERE country = 'Brazil'; 
+
+#3. Find the invoices of customers from Brazil. Include the customer's full name, invoice ID, date of invoice, and billing country. 
+
+SELECT
+    c.firstname,
+    c.lastname,
+    i.invoiceid,
+    i.billingcountry,
+    i.invoicedate
+FROM chinook.invoices i
+LEFT JOIN chinook.customers c
+USING (customerid)
+WHERE i.billingcountry = 'Brazil';
+
+#4. Find the Employees who are Sales Agents 
+
+SELECT *
+FROM chinook.employees
+WHERE title = 'Sales Support Agent';
+
+#5. Find a unique/distinct list of billing countries from the Invoice table. 
+
+SELECT
+    DISTINCT billingcountry
+FROM chinook.invoices;
+
+#6. Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name 
+
+SELECT
+    e.lastname,
+    e.firstname,
+    i.invoiceid
+FROM chinook.employees e
+JOIN chinook.customers c
+ON c.supportrepid = e.employeeid
+JOIN chinook.invoices i
+ON i.customerid = c.customerid;
+
+#7. Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers. 
+
+SELECT
+    e.lastname AS rep_lastname,
+    e.firstname AS rep_firstname,
+    c.firstname,
+    c.lastname,
+    c.country,
+    i.total AS invoice_total
+FROM chinook.employees e
+JOIN chinook.customers c
+ON c.supportrepid = e.employeeid
+JOIN chinook.invoices i
+ON i.customerid = c.customerid;
+
+#8. How many invoices were there in 2009? 
+
+SELECT
+    COUNT(invoiceid)
+FROM chinook.invoices
+WHERE invoicedate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#9. What are the total sales from 2009? 
+
+SELECT
+    SUM(total)
+FROM chinook.invoices
+WHERE invoicedate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#10. Write a query that includes the purchased track name with each invoice line ID. 
+
+SELECT
+    t.name,
+    i.invoicelineid
+FROM chinook.invoice_items i
+JOIN chinook.tracks t
+ON i.trackid = t.trackid;
+
+#11. Write a query that includes the purchased track name AND artist name with each invoice line ID. 
+
+SELECT
+    a.name AS artist_name,
+    t.name AS track_name,
+    i.invoicelineid
+FROM chinook.invoice_items i
+LEFT JOIN chinook.tracks t
+USING (trackid)
+JOIN chinook.albums 
+USING (albumid)
+JOIN chinook.artists a
+USING (artistid);
+
+#12. Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre. 
+
+SELECT
+    t.name AS track_name,
+    a.title AS album_title,
+    g.name AS genre,
+    m.name AS media_type
+FROM chinook.tracks t
+LEFT JOIN chinook.albums a
+USING (albumid)
+JOIN chinook.genres g
+USING (genreid)
+JOIN chinook.media_types m
+USING (mediatypeid);
+
+#13. Show the total sales made by each sales agent. 
+
+SELECT
+    e.firstname,
+    e.lastname,
+    SUM(i.total) AS total_sales
+FROM chinook.employees e
+JOIN chinook.customers c
+ON e.employeeid = c.supportrepid
+JOIN chinook.invoices i
+ON i.customerid = c.customerid
+GROUP BY e.employeeid;
+
+#14. Which sales agent made the most dollars in sales in 2009? 
+
+SELECT
+    e.firstname,
+    e.lastname,
+    SUM(i.total) AS total_sales
+FROM chinook.invoices i
+LEFT JOIN chinook.customers c
+USING (customerid)
+JOIN chinook.employees e
+ON c.supportrepid = e.employeeid
+WHERE i.invoicedate BETWEEN '2009-01-01' AND '2009-12-31'
+GROUP BY e.employeeid
+ORDER BY total_sales DESC
+LIMIT 1;
+
+#15. Which sales agent made the most total sales in April of 2009? 
+
+SELECT
+    e.firstname,
+    e.lastname,
+    SUM(i.total) AS total_sales
+FROM chinook.invoices i
+LEFT JOIN chinook.customers c
+USING (customerid)
+JOIN chinook.employees e
+ON c.supportrepid = e.employeeid
+WHERE i.invoicedate BETWEEN '2009-04-01' AND '2009-04-30'
+GROUP BY e.employeeid
+ORDER BY total_sales DESC
+LIMIT 1;
+
+#16. What are the total sales of each sales agent in the last quarter of 2009? 
+
+SELECT
+    e.firstname,
+    e.lastname,
+    SUM(i.total) AS total_sales
+FROM chinook.invoices i
+LEFT JOIN chinook.customers c
+USING (customerid)
+JOIN chinook.employees e
+ON c.supportrepid = e.employeeid
+WHERE i.invoicedate BETWEEN '2009-10-01' AND '2009-12-31'
+GROUP BY e.employeeid;
+
+#17. What are the total sales for the first quarter of 2009? 
+
+SELECT
+    SUM(total) AS total_sales
+FROM chinook.invoices
+WHERE invoiceid IN (
+    SELECT
+        invoiceid
+    FROM chinook.invoices
+    WHERE invoicedate BETWEEN '2009-01-01' AND '2009-03-31'
+    );
+    
+#18. What are the total sales for the last quarter of 2009? 
+
+SELECT
+    SUM(total) AS total_sales
+FROM chinook.invoices
+WHERE invoiceid IN (
+    SELECT
+        invoiceid
+    FROM chinook.invoices
+    WHERE invoicedate BETWEEN '2009-10-01' AND '2009-12-31'
+    );
+    
+#19. Which customers from Germany have an invoice from January of 2009? 
+
+SELECT
+    c.firstname,
+    c.lastname,
+    c.country,
+    c.customerid,
+    i.invoiceid,
+    i.invoicedate,
+    i.total
+FROM chinook.customers c
+JOIN chinook.invoices i
+USING (customerid)
+WHERE c.country = 'Germany'
+AND i.invoicedate BETWEEN '2009-01-01' AND '2009-01-31';
+
+#20. Which customers bought a track with the word 'Blue' in the title? 
+
+SELECT
+    c.firstname,
+    c.lastname,
+    c.customerid,
+    t.name AS track_name
+FROM chinook.customers c
+JOIN chinook.invoices i
+USING (customerid)
+JOIN chinook.invoice_items ii
+USING (invoiceid)
+JOIN chinook.tracks t
+USING (trackid)
+WHERE t.name LIKE '% blue %'
+AND t.trackid IN (
+    SELECT
+        ii.trackid
+    FROM chinook.invoice_items);
