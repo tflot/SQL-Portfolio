@@ -1,0 +1,355 @@
+#For this project, I used SQL to query multiple tables and sets of data provided to me by HackerRank.
+
+#In problem #1, I needed to query all columns from the CITY table to determine which cities in the USA had populations larger than 100000.
+
+CREATE TABLE city (
+    id INTEGER,
+    name VARCHAR(17),
+    countrycode VARCHAR(3),
+    district VARCHAR(20),
+    population INTEGER
+    )
+
+SELECT *
+FROM city
+WHERE population > 100000
+AND countrycode = 'USA';
+
+#In problem 2, I used the CITY table to query the name field for all American cities with populations larger than 120000.
+
+SELECT
+    name
+FROM city
+WHERE population > 120000
+AND countrycode = 'USA';
+
+#For problem 3, I queried all attributes for every row in the CITY table.
+
+SELECT
+    id,
+    name,
+    countrycode,
+    district,
+    population
+FROM city;
+
+#For problem 4, I queried all columns for a city in the CITY table with the ID 1661.
+
+SELECT *
+FROM city
+WHERE ID = 1661;
+
+#For problem 5 I queried all attributes of every Japaneses city in the CITY table.
+
+SELECT *
+FROM city
+WHERE countrycode = 'JPN'
+
+#For problem 6, I queried the names of all the Japanese cities in the CITY table.
+
+SELECT
+    name
+FROM city
+WHERE countrycode = 'JPN';
+
+#For problem 7, I counted the number cities having a population larger than 100000.
+
+SELECT
+    COUNT(population)
+FROM city
+WHERE population > 100000;
+
+#For problem 8, I found the total population of all cities where the district is California.
+
+SELECT
+    SUM(population)
+FROM city
+WHERE district = 'California';
+
+#For problem 9, I found the average population of all cities where the district is California.
+
+SELECT
+    AVG(population)
+FROM city
+WHERE district = 'California';
+
+#For problem 10, I found the average population for all cities, rounded down to the nearest integer.
+
+SELECT
+    ROUND(AVG(population),0)
+FROM city;
+
+#For problem 11, I found the sum of the populations for all Japanese cities.
+
+SELECT
+    SUM(population)
+FROM city
+WHERE countrycode = 'JPN';
+
+#For problem 12, I found the difference between the maximum and minimum populations.
+
+SELECT
+    MAX(population) - MIN(population)
+FROM city;
+
+#For problem 13, I analyzed the CITY table and an additional table, COUNTRY. Given the CITY and COUNTRY tables, I queried the sum of the populations of
+all cities where the continent is 'Asia'. The CITY and COUNTRY tables are described as follows:
+
+CREATE TABLE city (
+    id INTEGER,
+    name VARCHAR2(17),
+    countrycode VARCHAR2(3),
+    district VARCHAR2(20),
+    population INTEGER
+    );
+    
+CREATE TABLE country (
+    code VARCHAR2(3),
+    name VARCHAR2(44),
+    continent VARCHAR2(13),
+    region VARCHAR2(25),
+    surfacearea INTEGER,
+    INDEPYEAR VARCHAR2(5),
+    population INTEGER,
+    lifeexpectancy VARCHAR2(4),
+    gnp INTEGER,
+    gnpold VARCHAR2(9),
+    localname VARCHAR2(44),
+    governmentform VARCHAR2(44),
+    headofstate VARCHAR2(32),
+    capital VARCHAR2(4),
+    code2 VARCHAR2(2)
+    );
+
+SELECT
+    SUM(c1.population)
+FROM city c1
+JOIN country c2
+ON c1.countrycode = c2.code
+WHERE c2.continent = 'Asia';
+
+#For problem 14, I queried the CITY and COUNTRY tables by finding the names of all cities where the continent is 'Africa'.
+
+SELECT
+    c1.name
+FROM city c1
+JOIN country c2
+ON c1.countrycode = c2.code
+WHERE c2.continent = 'Africa';
+
+#For problem 15, I queried the names of all the continents (COUNTRY.continent) and their respective average city populations (CITY.population) rounded
+down to the nearest integer.
+
+SELECT
+    c2.continent,
+    FLOOR(AVG(c1.population))
+FROM city c1
+JOIN country c2
+ON c1.countrycode = c2.code
+GROUP BY c2.continent;
+
+
+#Next, I analyzed a new table STATION. For problem 1, I used SQL to query a list of cities and states from the Station table
+
+CREATE TABLE station (
+    id INTEGER,
+    city VARCHAR(21),
+    state VARCHAR(2),
+    lat_n INTEGER,
+    long_w INTEGER
+    )
+
+SELECT
+    city,
+    state
+FROM station;
+
+#For problem 2, I queried a list of city names from STATION for cities that have an even ID number.
+
+SELECT
+   DISTINCT city
+FROM station
+WHERE mod(ID,2) = 0;
+
+#For problem 3, I found the difference between the total number of city entries and the number of distinct city entries in the STATION table.
+
+SELECT
+    COUNT(city)-COUNT(DISTINCT city)
+FROM station;
+
+#For problem 4, I queried the two cities in the STATION table with the shortest and longest city names, as well as their respective lenghts (ie. number
+of characters in the name). Since there may be more than one small or largest length city name, I chose the one that comes first when ordered
+alphabetically.
+
+SELECT
+    city,
+    length(city)
+FROM station
+ORDER BY length(city), city ASC
+LIMIT 1;
+
+SELECT
+    city,
+    length(city)
+FROM station
+ORDER BY length(city) DESC, city ASC
+LIMIT 1;
+
+#For problem 5, I queried the list of city names from the STATION table that begin with vowels.
+
+SELECT
+    DISTINCT city
+FROM station
+WHERE
+    city LIKE 'a%' OR
+    city LIKE 'e%' OR
+    city LIKE 'i%' OR
+    city LIKE 'o%' OR
+    city LIKE 'u%';
+    
+#For problem 6, I queried the list of city names from the STATION table that do not end with vowels.
+
+SELECT
+    DISTINCT city
+FROM station
+WHERE
+    city NOT LIKE '%a' AND
+    city NOT LIKE '%e' AND
+    city NOT LIKE '%i' AND
+    city NOT LIKE '%o' AND
+    city NOT LIKE '%u';
+    
+#For problem 7, I queried the list of city names from STATION that either do not start with vowels or do not end with vowels.
+
+SELECT
+    DISTINCT city
+FROM station
+WHERE (
+    city NOT LIKE 'a%' AND
+    city NOT LIKE 'e%' AND
+    city NOT LIKE 'i%' AND
+    city NOT LIKE 'o%' AND
+    city NOT LIKE 'u%'
+    )
+OR (
+    city NOT LIKE '%a' AND
+    city NOT LIKE '%e' AND
+    city NOT LIKE '%i' AND
+    city NOT LIKE '%o' AND
+    city NOT LIKE '%u'
+    );
+
+#For problem 8, I queried the list of city names from STATION that do not start with vowels and do not end with vowels.
+
+SELECT
+    DISTINCT city
+FROM station
+WHERE (
+    city NOT LIKE 'a%' AND
+    city NOT LIKE 'e%' AND
+    city NOT LIKE 'i%' AND
+    city NOT LIKE 'o%' AND
+    city NOT LIKE 'u%'
+    )
+AND (
+    city NOT LIKE '%a' AND
+    city NOT LIKE '%e' AND
+    city NOT LIKE '%i' AND
+    city NOT LIKE '%o' AND
+    city NOT LIKE '%u'
+    );
+   
+#For problem 9, I found the sum of all latitude values and all longitude values in the STATION table, rounded to two decimal places.
+
+SELECT
+    ROUND(SUM(lat_n),2) AS lat,
+    ROUND(SUM(long_w),2) AS lon
+FROM station;
+
+#For problem 10, I queried the sum of northern latitudes (LAT_N) from STATION having values greater than 38.7880 and less than 137.2345, rounded to
+four decimal places.
+
+SELECT
+    ROUND(SUM(lat_n),4)
+FROM station
+WHERE lat_n BETWEEN 38.7880 AND 137.2345;
+
+#For problem 11, I queried the greatest value of the northern latitudes (LAT_N) from STATION that is less than 137.2345, rounded to four decimal places.
+
+SELECT
+    ROUND(MAX(lat_n),4)
+FROM station
+WHERE lat_n < 137.2345;
+
+#For problem 12, I queried the western longitude (LONG_W) for the largest northern latitude (LAT_N) in STATION that is less than 137.2345, rounded to four
+decimal places.
+
+SELECT
+    ROUND(long_w,4)
+FROM station
+WHERE lat_n = (
+    SELECT
+        MAX(lat_n)
+    FROM station
+    WHERE lat_n < 137.2345
+);
+
+#For problem 13, I queried the smallest northern latitude (LAT_N) from STATION that is greater than 38.7780, rounded to four decimal places.
+
+SELECT
+    ROUND(MIN(lat_n),4)
+FROM station
+WHERE lat_n > 38.7780;
+
+#For problem 14, I queried the western longitude (LONG_W) where the smallest northern latitude (LAT_N) in STATION is greater than 38.7780, rounded to four
+decimal places.
+
+SELECT
+    ROUND(long_w,4)
+FROM station
+WHERE lat_n = (
+    SELECT
+        MIN(lat_n)
+    FROM station
+    WHERE lat_n > 38.7780);
+
+
+#Next, I analyzed a new table EMPOLOYEE and queried the data to print a list of employee names in alphabetical order.
+
+CREATE TABLE employee (
+    employee_id INTEGER,
+    name STRING,
+    months INTEGER,
+    salary INTEGER);
+
+SELECT
+    name
+FROM employee
+ORDER BY name;
+
+#For problem 2, I wrote a query that printed a list of employee names for employees having a salary greater than $2000 per month who have been employees
+for less than 10 months. I sorted my results by employee_id.
+
+SELECT
+    name
+FROM employee
+WHERE salary > 2000
+AND months < 10
+ORDER BY employee_id ASC;
+
+#For problem 3, I wrote a query that found the maximum total earnings for all employees as weLL as the total number of employees who have maximum total
+earnings (where an employee's total earnings are defined by their monthly salary multipled by months worked) in the EMPLOYEE table.
+
+SELECT
+    MAX(salary*months),
+    COUNT(*)
+FROM employee
+WHERE (salary*months) >= (
+    SELECT
+        MAX(salary*months)
+    FROM employee);
+       
+
+
+
+
