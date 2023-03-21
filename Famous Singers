@@ -1,0 +1,227 @@
+CREATE TABLE singers (id INTEGER PRIMARY KEY, name TEXT, age INTEGER, birthplace TEXT, zodiac_sign TEXT);
+
+INSERT INTO singers VALUES (1, "Adele", 34, "England", "Taurus");
+INSERT INTO singers VALUES (2, "Dua Lipa", 26, "England", "Virgo");
+INSERT INTO singers VALUES (3, "Harry Styles", 28, "England", "Aquarius");
+INSERT INTO singers VALUES (4, "Niall Horan", 28, "Ireland", "Virgo");
+INSERT INTO singers VALUES (5, "Louis Tomlinson", 30, "England", "Capricorn");
+INSERT INTO singers VALUES (6, "Liam Payne", 28, "England", "Virgo");
+INSERT INTO singers VALUES (7, "Zayn Malik", 29, "England", "Capricorn");
+INSERT INTO singers VALUES (8, "Lizzo", 34, "United States", "Taurus");
+INSERT INTO singers VALUES (9, "Miley Cyrus", 29, "United States", "Sagittarius");
+INSERT INTO singers VALUES (10, "Demi Lovato", 29, "United States", "Leo");
+INSERT INTO singers VALUES (11, "Selena Gomez", 29, "United States", "Leo");
+INSERT INTO singers VALUES (12, "Beyonce Knowles", 40, "United States", "Leo");
+INSERT INTO singers VALUES (13, "Ed Sheeran", 31, "England", "Aquarius");
+INSERT INTO singers VALUES (14, "Taylor Swift", 32, "United States", "Sagittarius");
+INSERT INTO singers VALUES (15, "Ariana Grande", 29, "United States", "Cancer");
+INSERT INTO singers VALUES (16, "Justin Bieber", 28, "Canada", "Pisces");
+INSERT INTO singers VALUES (17, "Lady Gaga", 36, "United States", "Aries");
+INSERT INTO singers VALUES (18, "Rihanna", 34, "Barbados", "Pisces");
+INSERT INTO singers VALUES (19, "Nicki Minaj", 39, "Trinidad and Tobago", "Sagittarius");
+INSERT INTO singers VALUES (20, "Drake", 35, "Canada", "Scorpio");
+
+CREATE TABLE songs (id INTEGER PRIMARY KEY, name TEXT, song TEXT, release_year INTEGER);
+
+INSERT INTO songs VALUES(1, "Adele", "Rolling in the Deep", 2011);
+INSERT INTO songs VALUES(2, "Dua Lipa", "Levitating", 2020);
+INSERT INTO songs VALUES(3, "Harry Styles", "Watermelon Sugar", 2017);
+INSERT INTO songs VALUES(4, "Niall Horan", "Slow Hands", 2017);
+INSERT INTO songs VALUES(5, "Louis Tomlinson", "Back to You", 2018);
+INSERT INTO songs VALUES(6, "Liam Payne", "Strip That Down", 2017);
+INSERT INTO songs VALUES(7, "Zayn Malik", "Pillowtalk", 2016);
+INSERT INTO songs VALUES(8, "Lizzo", "Truth Hurts", 2019);
+INSERT INTO songs VALUES(9, "Miley Cyrus", "Wrecking Ball", 2013);
+INSERT INTO songs VALUES(10, "Selena Gomez", "Same Old Love", 2015);
+INSERT INTO songs VALUES(11, "Demi Lovato", "Cool for the Summer", 2015);
+INSERT INTO songs VALUES(12, "Beyonce Knowles", "Single Ladies (Put a Ring on It)", 2008);
+INSERT INTO songs VALUES(13, "Ed Sheeran", "Shape of You", 2017);
+INSERT INTO songs VALUES(14, "Taylor Swift", "Love Story", 2008);
+INSERT INTO songs VALUES(15, "Ariana Grande", "Thank U, Next", 2019);
+INSERT INTO songs VALUES(16, "Justin Bieber", "Sorry", 2015);
+INSERT INTO songs VALUES(17, "Lady Gaga", "Bad Romance", 2009);
+INSERT INTO songs VALUES(18, "Rihanna", "Love on the Brain", 2016);
+INSERT INTO songs VALUES(19, "Nicki Minaj", "Super Bass", 2010);
+INSERT INTO songs VALUES(20, "Drake", "Passionfruit", 2017);
+
+CREATE TABLE hobbies (id INTEGER PRIMARY KEY, name TEXT, activity TEXT);
+
+INSERT INTO hobbies VALUES (1, "Adele", "play piano");
+INSERT INTO hobbies VALUES (2, "Dua Lipa", "walk dogs");
+INSERT INTO hobbies VALUES (3, "Harry Styles", "read");
+INSERT INTO hobbies VALUES (4, "Niall Horan", "golf");
+INSERT INTO hobbies VALUES (5, "Louis Tomlinson", "party");
+INSERT INTO hobbies VALUES (6, "Liam Payne", "work out");
+INSERT INTO hobbies VALUES (7, "Zayn Malik", "draw");
+INSERT INTO hobbies VALUES (8, "Lizzo", "paint");
+INSERT INTO hobbies VALUES (9, "Miley Cyrus", "ride bike");
+INSERT INTO hobbies VALUES (10, "Selena Gomez", "skateboard");
+INSERT INTO hobbies VALUES (11, "Demi Lovato", "craft");
+INSERT INTO hobbies VALUES (12, "Beyonce Knowles", "relax");
+INSERT INTO hobbies VALUES (13, "Ed Sheeran", "lego");
+INSERT INTO hobbies VALUES (14, "Taylor Swift", "bake");
+INSERT INTO hobbies VALUES (15, "Ariana Grande", "sing");
+INSERT INTO hobbies VALUES (16, "Justin Bieber", "play video games");
+INSERT INTO hobbies VALUES (17, "Lady Gaga", "meditate");
+INSERT INTO hobbies VALUES (18, "Rihanna", "dance");
+INSERT INTO hobbies VALUES (19, "Nicki Minaj", "relax");
+INSERT INTO hobbies VALUES (20, "Drake", "produce music");
+
+
+/* what song did each artist sing, ordered by artist? */
+SELECT
+  singers.name,
+  songs.song
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+ORDER BY singers.name;
+
+
+/* what hobby does each singer like to do in their free time? */
+SELECT
+  singers.name,
+  hobbies.activity
+FROM singers
+JOIN hobbies
+ON singers.name = hobbies.name;
+
+
+/* which songs were sung by singers that are virgos? */
+SELECT
+  singers.name,
+  songs.song
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE singers.zodiac_sign = "Virgo";
+
+
+/* what are the hobbies of Taurean singers? */
+SELECT
+  singers.name,
+  hobbies.activity
+FROM singers
+JOIN hobbies
+ON singers.name = hobbies.name
+WHERE singers.zodiac_sign = "Taurus";
+
+
+/* what are the names and hobbies of the singers born in England? */
+SELECT
+  singers.name,
+  hobbies.activity AS hobbies
+FROM singers
+JOIN hobbies
+ON singers.name = hobbies.name
+WHERE singers.birthplace = "England";
+
+
+/* what are the names of the songs sung by singers that are over the age of 30? */
+SELECT 
+  songs.song
+FROM singers
+JOIN songs
+ON songs.name = singers.name
+WHERE singers.age > 30;
+
+
+/* what are the hobbies of singers under the age of 30? */
+SELECT
+  hobbies.activity AS hobbies
+FROM singers
+JOIN hobbies
+ON hobbies.name = singers.name
+WHERE singers.age < 30;
+
+
+/* who are the singers from the United States that released songs before 2015? list the singer, name of song, and release year. */
+SELECT
+  singers.name,
+  songs.song,
+  songs.release_year
+FROM singers
+JOIN songs
+ON songs.name = singers.name
+WHERE singers.birthplace = "United States" AND release_year < 2015;
+
+
+/* what are the names and zodiac signs of singers whose songs were released after 2018? */
+SELECT
+  singers.name,
+  singers.zodiac_sign
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE songs.release_year > 2018;
+
+
+/* what are the names, song titles, and release years of songs released by Leo singers? */
+SELECT
+  singers.name,
+  songs.song,
+  songs.release_year
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE singers.zodiac_sign = "Leo";
+
+
+/* what are the names and birthplaces of singers whose songs were released in or after 2018? */
+SELECT
+  singers.name,
+  singers.birthplace
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE release_year >= 2018;
+
+
+/* what are the names and zodiac signs of English singers whose songs were released before 2020? */
+SELECT
+  singers.name,
+  singers.zodiac_sign
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE singers.birthplace = "England" AND songs.release_year < 2020;
+
+
+/* how many songs were released from each birthplace? */
+SELECT
+  singers.birthplace,
+  COUNT(song) AS songs_released
+FROM songs
+JOIN singers
+ON songs.name = singers.name
+GROUP BY birthplace
+ORDER BY songs_released DESC;
+
+
+/* how many songs were released from each zodiac sign? */
+SELECT
+  singers.zodiac_sign,
+  COUNT(song) AS songs_released
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+GROUP BY singers.zodiac_sign
+ORDER BY songs_released DESC;
+
+
+/* name the artist and song of songs released in the most popular release year? */
+SELECT
+  release_year,
+  COUNT(release_year) AS songs_released
+FROM songs
+GROUP BY release_year
+ORDER BY songs_released DESC
+LIMIT 1;
+    
+SELECT 
+    singers.name,
+    songs.song
+FROM singers
+JOIN songs
+ON singers.name = songs.name
+WHERE release_year = 2017;
