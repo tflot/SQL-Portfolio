@@ -1,0 +1,84 @@
+/* create a clothing store database */
+
+CREATE TABLE clothing (
+    id INTEGER PRIMARY KEY,
+    article TEXT,
+    size TEXT,
+    material TEXT,
+    color TEXT,
+    price INTEGER,
+    quantity INTEGER);
+
+INSERT INTO clothing VALUES (1, "blouse", "S", "silk", "black", 29.99, 8);
+INSERT INTO clothing VALUES (2,"t-shirt", "S", "cotton", "white", 5.99, 13);
+INSERT INTO clothing VALUES (3, "t-shirt", "M", "cotton", "black", 5.99, 25);
+INSERT INTO clothing VALUES (4, "graphic t-shirt", "L", "cotton", "purple", 17.99, 10);
+INSERT INTO clothing VALUES (5, "trousers", "S", "spandex", "black", 29.99, 5);
+INSERT INTO clothing VALUES (6, "jeans", "XS", "denim", "dark blue", 19.99, 35);
+INSERT INTO clothing VALUES (7, "jeans", "XL", "denim", "white", 39.99, 20);
+INSERT INTO clothing VALUES (8, "shorts", "M", "denim", "light blue", 19.99, 12);
+INSERT INTO clothing VALUES (9, "skirt", "L", "rayon", "pink", 29.99, 10);
+INSERT INTO clothing VALUES (10, "skirt", "M", "denim", "dark blue", 29.99, 4);
+INSERT INTO clothing VALUES (11, "jacket", "L", "leather", "black", 59.99, 3);
+INSERT INTO clothing VALUES (12, "jacket", "XL", "denim", "light blue", 29.99, 5);
+INSERT INTO clothing VALUES (13, "dress", "M", "linen", "white", 24.99, 10);
+INSERT INTO clothing VALUES (14, "dress", "XS", "spandex", "dark blue", 24.99, 5);
+INSERT INTO clothing VALUES (15, "sweater", "XL", "cotton", "gray", 19.99, 20);
+
+
+/* display the database ordered by price */
+
+SELECT *
+FROM clothing
+ORDER BY price;
+
+
+/* what are maximum and minimum prices in the clothing database? */
+
+SELECT MAX(price)
+FROM clothing;
+
+SELECT MIN(price)
+FROM clothing;
+
+
+/* what is the average price of a denim article? */
+
+SELECT
+  AVG(price)
+FROM clothing
+WHERE material = "denim" ;
+
+
+/* what are the top five items that have the most inventory in stock? */
+
+SELECT 
+  article,
+  quantity
+FROM clothing
+ORDER BY quantity DESC
+limit 5;
+
+
+/* what is the total inventory retail amount of each article of clothing, ordered from the lowest to highest priced item? */
+
+SELECT 
+  article,
+  size, 
+  material, 
+  color, 
+  price, 
+  quantity, 
+  ROUND((quantity * price),2) AS total_inventory_retail
+FROM clothing
+ORDER BY price;
+
+
+/* what is the total inventory retail amount of each article type (e.g. dress, skirt, jacket, etc.), ordered by total retail amount? */
+
+SELECT
+    article,
+    ROUND((quantity * price),2) AS inventory_retail_total
+FROM clothing
+GROUP BY article
+ORDER BY inventory_retail_total;
